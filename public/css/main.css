@@ -13,7 +13,7 @@ body {
 }
 
 main {
-  width: 100%;
+  width: 90%;
   padding: 1rem;
   margin: auto;
   overflow: hidden;
@@ -29,7 +29,6 @@ form {
 }.background-image{
   background-image:url(../image/anh-nen.jpg) !important;
   height: 100%;
-  opacity: 0.9;
 }
 h1 {
   color: white;

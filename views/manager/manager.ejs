@@ -1,0 +1,92 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <div class="background">
+                <main>
+                    <div class="salary">
+                        <div class="form">
+                            <h2>TRANG QUẢN LÝ NHÂN VIÊN</h2>
+                            <form action="/manager" method="POST">
+                                <label for="month">Chọn tháng: </label>
+                                <input type="month" name="month" id="month">
+                                <button class="btn" type="submit">Submit</button>
+                            </form>
+                        </div>
+                       <p>Tháng đang chọn :  <%= staff.monthSelected ? staff.monthSelected.getMonth() + 1 + ' - ' +
+                        staff.monthSelected.getFullYear() : 'No selecting' %></p>
+                               
+                       <div class="time-record-list">
+                        <h2 class="centered">Bản ghi chấm công của nhân viên</h2>
+                        <h3 class="centered">Tên nhân viên : <%= staff.name %></h3>
+                        <h3>
+                            Tổng số giờ làm : <%= totalSalary.toFixed(4) %> (h)
+                        </h3>
+                       
+                            <div class="table">
+                                <table>
+                                    <tr>
+                                        <th>Stt</th>
+                                        <th>Thời gian bắt đầu </th>
+                                        <th>Thời gian kết thúc</th>
+                                        <th>Địa điểm </th>
+                                        <th>Số giờ làm    </th>
+                                    </tr>
+                                    <% let i=0 %>
+                                        <% for (let t of timeRecords) { %>
+                                            <% i++ %>
+                                                <tr>
+                                                    <td>
+                                                        <%= i %>
+                                                    </td>
+                                                    <td>
+                                                        <%= t.startTime.toString().slice(0,25) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= t.endTime.toString().slice(0,25) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= t.location%>
+                                                    </td>
+                                                    <td>
+                                                        <%= ((t.endTime -
+                                                            t.startTime)/3600000).toFixed(4) %> 
+                                                            <form action="/deleteRecord" method="POST">
+                                                             <input type="hidden" value="<%= t._id %>" name="recordId">
+                                                              <button class="btn" type="submit">Xóa</button>
+                                                             </form>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                </table>
+                            </div>
+                            
+                    </div> 
+                    </div>
+                </main>
+                <section class="pagination">
+                    <% if (currentPage !==1 && previousPage !==1) { %>
+                        <a href="?page=1">1</a>
+                        <% } %>
+                            <% if (hasPreviousPage) { %>
+                                <a href="?page=<%= previousPage %>">
+                                    <%= previousPage %>
+                                </a>
+                                <% } %>
+                                    <a href="?page=<%= currentPage %>" class="active">
+                                        <%= currentPage %>
+                                    </a>
+                                    <% if (hasNextPage) { %>
+                                        <a href="?page=<%= nextPage %>">
+                                            <%= nextPage %>
+                                        </a>
+                                        <% } %>
+                                            <% if (lastPage !==currentPage && nextPage !==lastPage) { %>
+                                                <a href="?page=<%= lastPage %>">
+                                                    <%= lastPage %>
+                                                </a>
+                                                <% } %>
+                </section>
+            </div>
+            <%- include('../includes/end.ejs') %>

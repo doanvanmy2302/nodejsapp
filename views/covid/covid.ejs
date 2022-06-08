@@ -1,0 +1,59 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+   <%- include('../includes/navigation.ejs') %>
+   <div class="background-image">
+    <main >
+        <div class="form ">
+            <h2 class="centered">Nhiệt độ cơ thể</h2>
+            <form action="/covid/body-temperature" method="POST">
+                <div>
+                    <input type="number" name="bodytemp" id="bodytemp" step="1" placeholder="nhiệt độ cơ thể ..." required>
+                </div>
+                <button class="btn" type="submit">Đăng kí</button>
+            </form>
+        </div>
+
+        <div class="form">
+            <h2 class="centered">Đăng kí tiêm vaccine</h2>
+            <form action="/covid/vaccine" method="POST">
+                <div>
+                    <label for="numberVaccine">Vaccine mũi số: </label>
+                    <input type="number" name="numberVaccine" id="numberVaccine" min="1" placeholder="Mũi 1 ..." required>
+                    <label for="vaccine_type">Loại Vaccine : </label>
+                    <input type="text" name="vaccine_type" id="vaccine_type" placeholder="loại Vaccine..." required>
+                    <label for="vaccine_date">Ngày đăng kí tiêm : </label>
+                    <input type="date" name="vaccine_date" id="vaccine_date">
+                </div>
+                <button class="btn" type="submit">Đăng kí</button>
+            </form>
+        </div>
+
+        <div class="form">
+            <h2 class="centered">Kết quả kiểm tra covid</h2>
+            <form action="/covid/test-result" method="POST">
+                <div class="centered">
+                    <labe class="centered" for="positive">Dương tính</labe>
+                    <input type="radio" name="test_result" id="positive" value="true">
+                    <label for="negative">Âm tính</label>
+                    <input type="radio" name="test_result" id="negative" value="false">
+                </div>
+                <button class="btn" type="submit">Đăng kí</button>
+            </form>
+        </div>
+       <% if(isManager) { %>
+        <div class="form">
+           <h2 class="centered">Thông tin covid nhân viên</h2>
+           <p>Tên nhân viên : <%= staff.name%></p>
+           <p>Nhiệt độ cơ thể : <%= bodyTemp.temperature%></p>
+           <P>Mũi vaccine : <%= vaccine.numberVaccine %></P>
+           <p>Loại vaccine : <%= vaccine.type %></p>
+           <p>Ngày tiêm : <%= vaccine.date.toString().slice(0,15) %></p>
+           <p>kết quả test covid : <%= staff.covidTestResult == true ? 'dương tính': 'âm tính'%></p>
+           <button class="btn" type="submit"><a class="covid__btn" target="_blank" href="/covid/<%= staff._id%>">XUẤT TRANG PDF</a></button>
+        </div>
+        <% } %>
+    </main>
+</div>
+<%- include('../includes/end.ejs') %>

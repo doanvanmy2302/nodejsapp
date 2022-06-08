@@ -1,0 +1,146 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <div class="background">
+            <main>
+                <div class="staff-info">
+                    <div class="centered">
+                        <h1>Họ và tên : 
+                            <%= staff.name %>
+                        </h1>
+                    </div>
+                    <div>
+                        <label for="">Trạng thái làm việc: </label>
+                        <input type="text" name="isworking" id="isworking"
+                            value="<%= timeRecordTodayNotEndTime ? 'ĐANG LÀM VIỆC ' : 'CHƯA LÀM VIỆC' %>" readonly>
+                    </div>
+                    <% if (timeRecordTodayNotEndTime) { %>
+                        <div>
+                            <label for="location">Địa điểm lam việc: </label>
+                            <input type="text" name="location" id="location"
+                                value="<%= timeRecordTodayNotEndTime ? timeRecordTodayNotEndTime.timeRecordId.location : '' %>" readonly>
+                        </div>
+                        <div>
+                            <label for="starttime">Thời gian bắt đầu: </label>
+                            <input type="text" name="starttime" id="starttime"
+                                value="<%= timeRecordTodayNotEndTime ? timeRecordTodayNotEndTime.timeRecordId.startTime.toString().slice(0,25) : '' %>" readonly>
+                        </div>
+                        <% } %>
+                </div>
+                <div class="centered">
+                    <button class="btn" type="button" id="btn-start">Bắt đầu làm việc</button>
+                    <button class="btn" type="button" id="btn-end">Kết thúc làm việc</button>
+                    <button class="btn" type="button" id="btn-annual-leave">đăng kí ngày nghỉ</button>
+                </div>
+
+                <div class="start-working form">
+                    <h2>Bắt đầu làm việc</h2>
+                    <form action="/start-working" method="POST">
+                        <div>
+                            <label for="location">Nơi làm việc</label>
+                            <select id="location" name="location">
+                                <option value="Văn phòng" selected>Văn phòng</option>
+                                <option value="Ở nhà">Ở nhà</option>
+                                <option value="Ở khách sạn">Ở khách hàng</option>
+                            </select>
+                        </div>
+                        <% if (!timeRecordTodayNotEndTime) { %>
+                            <button class="btn" type="submit">Bắt đầu </button>
+                            <% } %>
+
+                    </form>
+                </div>
+                <div class="end-working form">
+                    <h2>Kết thúc làm việc</h2>
+                    <form action="/end-working" method="POST">
+                        <div>
+                            <% if (timeRecordTodayNotEndTime) { %>
+                                <input type="hidden" name="timeRecordId" id="timeRecordId"
+                                    value="<%= timeRecordTodayNotEndTime.timeRecordId._id %>">
+                                <% } %>
+                        </div>
+                        <% if (timeRecordTodayNotEndTime) { %>
+                            <button class="btn" type="submit">kết thúc</button>
+                            <% } %>
+                    </form>
+                </div>
+
+                <div class="annual-leave form">
+                    <h2>Đăng kí ngày nghỉ</h2>
+                    <form name="annualleaveForm" action="/annual-leave" method="POST">
+                        <div>
+                            <label for="dateOff">Ngày nghỉ: </label>
+                            <input type="Date" name="dateOff" id="dateOff" required>
+                        </div>
+                        <div>
+                            <label for="reason">Lí do: </label><br>
+                            <textarea name="reason" id="reason" required></textarea>
+                        </div>
+                        <div>
+                            <label for="annual-leave-remaining">Số ngày nghỉ còn lại: </label>
+                            <input type="number" name="" id="" value="<%= staff ? staff.annualleave: '' %>" readonly>
+                            <% if(staff) { %>
+                                <% if(staff.annualleave==0) { %>
+                                    <span style="color: red">( Số ngày nghỉ đã hết! )</span>
+                                    <% } %>
+                                        <% } %>
+                        </div>
+                        <div>
+                            <label for="hoursAmount">Số giờ nghỉ: </label>
+                            <input type="number" name="hoursAmount" id="hoursAmount" min="0" max="8" required>
+                        </div>
+                        <input type="hidden" id="annual-leave-record" value="<%= annualleave %>">
+                        <button class="btn" type="submit" id="btnsubmitannualleave">Submit</button>
+                    </form>
+                </div>
+                <% if (!timeRecordTodayNotEndTime) { %>
+                    <div class="time-record-list">
+                        <h2 class="centered">Bản ghi chấm công hôm nay</h2>
+                        <h3>
+                            Tổng số giờ làm hôm nay: <%= hoursTotalToday.toFixed(3) %> (h)
+                        </h3>
+                        <% if (timeRecordToday) { %>
+                            <div class="table">
+                                <table>
+                                    <tr>
+                                        <th>Stt</th>
+                                        <th>Thời gian bắt đầu </th>
+                                        <th>Thời gian kết thúc</th>
+                                        <th>Địa điểm </th>
+                                        <th>Số giờ làm</th>
+                                    </tr>
+                                    <% let i=0 %>
+                                        <% for (let t of timeRecordToday) { %>
+                                            <% i++ %>
+                                                <tr>
+                                                    <td>
+                                                        <%= i %>
+                                                    </td>
+                                                    <td>
+                                                        <%= t.timeRecordId.startTime.toString().slice(0,25) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= t.timeRecordId.endTime.toString().slice(0,25) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= t.timeRecordId.location%>
+                                                    </td>
+                                                    <td>
+                                                        <%= ((t.timeRecordId.endTime -
+                                                            t.timeRecordId.startTime)/3600000).toFixed(4) %>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                </table>
+                            </div>
+                            <% } %>
+                    </div>
+                    <% } %>
+
+            </main>
+        </div>
+        <script src="/js/timekeeping.js"></script>
+            <%- include('../includes/end.ejs') %>

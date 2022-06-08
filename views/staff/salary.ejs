@@ -1,0 +1,155 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <div class="background-image">
+                <main>
+                    <div class="salary">
+                        <div class="form">
+                            <h2>Lương</h2>
+                            <form action="/month-salary" method="POST">
+                                <label for="month">Chọn tháng: </label>
+                                <input type="month" name="month" id="month">
+                                <button class="btn" type="submit">Submit</button>
+                            </form>
+                        </div>
+
+                        <table>
+                            <tr>
+                                <td>Tháng đang chọn</td>
+                                <td>
+                                    <%= staff.monthSelected ? staff.monthSelected.getMonth() + 1 + ' - ' +
+                                        staff.monthSelected.getFullYear() : 'No selecting' %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tỉ lệ lương</td>
+                                <td>
+                                    <%= staff.salaryScale %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mức lương cơ bản</td>
+                                <td>3000000 VND / month</td>
+                            </tr>
+                            <tr>
+                                <td>Số giờ làm thêm của tháng</td>
+                                <td>
+                                    <%= salaryObj.overTimeMonth.toFixed(4) %> (h)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lương làm thêm</td>
+                                <td>200000 VND / h</td>
+                            </tr>
+                            <tr>
+                                <td><b>Lương tháng</b></td>
+                                <td><b>
+                                        <%= salaryObj.salaryMonth.toFixed(0)%> VND
+                                    </b></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="record-hours-work">
+                        <hr>
+                        <h2>Bản ghi chấm công</h2>
+
+
+                        <ul>
+                            <% if(timeRecords.length> 0) { %>
+                                <% for ( item of timeRecords.reverse() ) { %>
+                                    <br>
+                                    <li><b>
+                                            <%= item.date %>
+                                        </b></li>
+                                    <br>
+                                    <ul>
+                                        <li>
+                                            <ul>
+                                                <li style="list-style: none;">
+                                                    <div class="table">
+                                                        <table>
+                                                            <tr>
+                                                                <th>thời gian bắt đầu</th>
+                                                                <th>thời gian kết thúc</th>
+                                                                <th>Địa điểm</th>
+                                                                <th>Tổng số giờ làm</th>
+                                                            </tr>
+                                                            <% for ( t of item.timeRecords ) { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <%= t.startTime.toString().slice(16, 24) %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= t.endTime.toString().slice(16, 24) %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= t.location %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= t.hoursAmount.toFixed(4) %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% } %>
+                                                        </table>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <ul>
+                                                <li style="list-style: none;">
+                                                    <p>số giờ nghỉ: <%= item.annualLeaveofDay %> (hour)</p>
+                                                </li>
+                                                <li style="list-style: none;">
+                                                    <p>Số giờ làm thêm: <%= (item.dayHoursAmount +
+                                                            item.annualLeaveofDay)> 8 ? (item.dayHoursAmount +
+                                                            item.annualLeaveofDay - 8 ).toFixed(4) : '0' %> (h) </p>
+                                                </li>
+                                                <li style="list-style: none;">
+                                                    <p>Số giờ làm thiếu: <%= (item.dayHoursAmount +
+                                                            item.annualLeaveofDay) < 8 ? ( 8 - item.dayHoursAmount -
+                                                            item.annualLeaveofDay ).toFixed(4) : '0' %> (h) </p>
+                                                </li>
+                                                <li style="list-style: none;">
+                                                    <p style="font-weight: bold;">Tổng thời gian: <%=
+                                                            (item.dayHoursAmount + item.annualLeaveofDay).toFixed(4) %>
+                                                            (h)</p>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    <hr>
+                                    <% } %>
+                                        <% } %>
+                        </ul>
+                    </div>
+
+                    <section class="pagination">
+                        <% if (currentPage !==1 && previousPage !==1) { %>
+                            <a href="?page=1">1</a>
+                            <% } %>
+                                <% if (hasPreviousPage) { %>
+                                    <a href="?page=<%= previousPage %>">
+                                        <%= previousPage %>
+                                    </a>
+                                    <% } %>
+                                        <a href="?page=<%= currentPage %>" class="active">
+                                            <%= currentPage %>
+                                        </a>
+                                        <% if (hasNextPage) { %>
+                                            <a href="?page=<%= nextPage %>">
+                                                <%= nextPage %>
+                                            </a>
+                                            <% } %>
+                                                <% if (lastPage !==currentPage && nextPage !==lastPage) { %>
+                                                    <a href="?page=<%= lastPage %>">
+                                                        <%= lastPage %>
+                                                    </a>
+                                                    <% } %>
+                    </section>
+                </main>
+            </div>
+            <%- include('../includes/end.ejs') %>

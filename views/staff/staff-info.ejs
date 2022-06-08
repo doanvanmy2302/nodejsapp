@@ -1,0 +1,52 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <div class="background-image">
+    <main class="centered">
+        <hr>
+        <div class="image">
+            <img src="<%= staff.imageUrl %>" alt="<%= staff.name %>">
+        </div>
+        <hr>
+        <div class="table-staff">
+
+        </div>
+        <table>
+            <tr>
+                <td><b>Tên nhân viên</b></td>
+                <td><%= staff.name %></td>
+            </tr>
+            <tr>
+                <td><b>Ngày sinh</b></td>
+                <td><%= staff.doB.toString().slice(3, 15) %></td>
+            </tr>
+            <tr>
+                <td><b>Tỉ lệ lương</b></td>
+                <td><%= staff.salaryScale %></td>
+            </tr>
+            <tr>
+                <td><b>Ngày bắt đầu</b></td>
+                <td><%= staff.startDate.toString().slice(3, 15) %></td>
+            </tr>
+            <tr>
+                <td><b>Phòng ban</b></td>
+                <td><%= staff.department %></td>
+            </tr>
+            <tr>
+                <td><b>Số ngày nghỉ </b></td>
+                <td><%= staff.annualleave %></td>
+            </tr>
+            <tr>
+                <td><b>Link ảnh</b></td>
+                <td>
+                    <form action="/edit-staff-image" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="image" id="image" required>
+                        <button style="margin-left: 0px;" class="btn" type="submit">Cập nhập</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </main></div>
+<%- include('../includes/end.ejs') %>
